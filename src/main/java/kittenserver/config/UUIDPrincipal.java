@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Getter
-public class StompPrincipal implements Principal {
+public class UUIDPrincipal implements Principal {
 
   private final String name = UUID.randomUUID().toString();
 
@@ -15,7 +15,7 @@ public class StompPrincipal implements Principal {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    StompPrincipal that = (StompPrincipal) o;
+    UUIDPrincipal that = (UUIDPrincipal) o;
     return Objects.equals(name, that.name);
   }
 

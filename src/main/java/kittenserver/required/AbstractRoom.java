@@ -1,7 +1,7 @@
 package kittenserver.required;
 
-import kittenserver.config.RoomConfig;
 import kittenserver.config.WebSocketConfig;
+import kittenserver.config.RoomConfig;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

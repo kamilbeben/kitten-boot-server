@@ -18,7 +18,7 @@ import java.util.Set;
  */
 public abstract class AbstractLobbyService<T extends AbstractPlayer<R>, R extends AbstractRoom<T>> {
 
-  @Autowired protected SimpMessagingTemplate messagingTemplate;
+  @Autowired protected SimpMessagingTemplate webSocket;
   @Autowired protected AbstractPlayerHolder<T> playerHolder;
 
   protected final Set<AbstractRoom> rooms = new HashSet<>();
@@ -34,7 +34,7 @@ public abstract class AbstractLobbyService<T extends AbstractPlayer<R>, R extend
   }
 
   private R createNewRoom(Set<T> players) {
-    R room = constructRoom(players, messagingTemplate);
+    R room = constructRoom(players, webSocket);
 
     synchronized (rooms) {
       rooms.add(room);

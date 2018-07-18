@@ -7,10 +7,10 @@ import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 import java.security.Principal;
 import java.util.Map;
 
-public class KittenHandhsakeHandler extends DefaultHandshakeHandler {
+public class UUIDHandshakeHandler extends DefaultHandshakeHandler {
 
   @Override
   protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {
-    return new StompPrincipal();
+    return new UUIDPrincipal();
   }
 }
