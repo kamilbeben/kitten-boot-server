@@ -1,7 +1,11 @@
 package kittenserver.required;
 
+import kittenserver.config.UUIDPrincipal;
+import kittenserver.events.PlayerDisconnectEvent;
 import kittenserver.example.ExamplePlayerHolder;
 import lombok.NonNull;
+import org.springframework.context.event.EventListener;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.security.Principal;
 import java.util.HashMap;
@@ -26,13 +30,18 @@ public abstract class AbstractPlayerHolder<T extends AbstractPlayer> {
     }
   }
 
-  public void removePlayer(@NonNull T player) {
-    requireNonNull(player.getRoom());
-
-    player.getRoom().remove(player);
+  @EventListener(PlayerDisconnectEvent.class)
+  public void removePlayer(PlayerDisconnectEvent event) {
+    T player = (T) event.getSource();
 
     synchronized (map) {
       map.remove(player.getPrincipal());
+    }
+
+    // remove player from room if already in one
+    AbstractRoom room = player.getRoom();
+    if (room != null) {
+      room.remove(player);
     }
   }
 

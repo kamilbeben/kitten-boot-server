@@ -1,21 +1,21 @@
 package kittenserver.example;
 
-import kittenserver.config.RoomConfig;
-import kittenserver.packets.GenericPacket;
+import kittenserver.properties.RoomProperties;
 import kittenserver.required.AbstractRoom;
 
 import java.util.Set;
-import java.util.function.Consumer;
 
 public class ExampleRoom extends AbstractRoom<ExamplePlayer> {
 
-  public ExampleRoom(Consumer<GenericPacket> sendPacket, Set<ExamplePlayer> players, RoomConfig config) {
-    super(sendPacket, players, config);
+  public ExampleRoom(Set<ExamplePlayer> players, RoomProperties config) {
+    super(players, config);
   }
 
   @Override
   protected void init() {
-
+    synchronized (players) {
+      players.forEach(player -> player.send("/room_started", "ROOM STARTED"));
+    }
   }
 
   @Override
@@ -35,6 +35,8 @@ public class ExampleRoom extends AbstractRoom<ExamplePlayer> {
 
   @Override
   protected Object buildUpdatePacket() {
-    return null;
+    RoomUpdate packet = new RoomUpdate();
+    packet.setSomeData("literally anything");
+    return packet;
   }
 }

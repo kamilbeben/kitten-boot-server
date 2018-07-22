@@ -1,4 +1,4 @@
-package kittenserver.events;
+package kittenserver.beans;
 
 import kittenserver.packets.GenericPacket;
 import lombok.RequiredArgsConstructor;

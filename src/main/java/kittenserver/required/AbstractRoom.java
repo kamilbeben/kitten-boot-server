@@ -1,14 +1,11 @@
 package kittenserver.required;
 
-import kittenserver.config.RoomConfig;
-import kittenserver.packets.GenericPacket;
+import kittenserver.properties.RoomProperties;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 import static kittenserver.packets.GenericPacket.buildPacket;
@@ -18,26 +15,21 @@ public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnabl
 
   @Getter protected final String uuid = UUID.randomUUID().toString();
   protected final Set<T> players;
-  protected final Consumer<GenericPacket> sendPacket;
-  protected final RoomConfig config;
+  protected final RoomProperties config;
   protected final Timer notifyPlayersTimer = new Timer();
-  protected final String updateDestination;
 
   private boolean stopRoom = false;
 
-  public AbstractRoom(@NonNull Consumer<GenericPacket> sendPacket,
-                      @NonNull Set<T> players,
-                      @NonNull RoomConfig config) {
+  public AbstractRoom(@NonNull Set<T> players,
+                      @NonNull RoomProperties config) {
 
     if (players.size() > config.getMaxPlayers()) {
       throw new UnsupportedOperationException("Players size exceeded maximum size");
     }
 
-    this.sendPacket = sendPacket;
     this.config = config;
     this.players = players;
-
-    this.updateDestination = config.getRoomUpdateDetination(uuid);
+    this.players.forEach(player -> player.setRoom(this));
   }
 
   /**
@@ -63,8 +55,8 @@ public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnabl
   protected abstract void update (long deltaTime);
 
   /**
-   * Build a packet that is dispatched to every player in the room once every {@link RoomConfig#updateSendingInterval}.
-   * The packet is dispatched to destination under {@link #updateDestination}.
+   * Build a packet that is dispatched to every player in the room once every {@link RoomProperties#updatePacketInterval}.
+   * The packet is dispatched to destination configured in {@link RoomProperties#updateDestination}
    *
    * @see #notifyPlayers()
    */
@@ -78,14 +70,14 @@ public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnabl
   public void start() {
     init();
 
-    new Thread(this).run();
+    new Thread(this).start();
 
-    notifyPlayersTimer.schedule(new TimerTask() {
+    notifyPlayersTimer.scheduleAtFixedRate(new TimerTask() {
       @Override
       public void run() {
         notifyPlayers();
       }
-    }, config.getUpdateSendingInterval());
+    }, new Date(), config.getUpdatePacketInterval());
   }
 
   @Override
@@ -116,6 +108,7 @@ public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnabl
 
   /**
    * Defines whenever player can join currently running game or not.
+   * @return false. By default players cannot join started room.
    */
   public boolean canJoin(T player) {
     return false;
@@ -123,29 +116,26 @@ public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnabl
 
   public void join(T player) throws UnsupportedOperationException {
     if (players.contains(player)) {
-      throw new UnsupportedOperationException(
-        "Player already in room.\n" +
-        "Player: [" + player + "]\n" +
-        "Players: [" + Arrays.toString(players.toArray()) + "]"
-      );
+      return;
     }
+
     synchronized (players) {
       players.add(player);
     }
+
     onPlayerJoin(player);
   }
 
   /**
-   * Sends update room packet every {@link RoomConfig#updateSendingInterval}.<br>
+   * Sends update room packet every {@link RoomProperties#updatePacketInterval}.<br>
    * Called by: {@link #notifyPlayersTimer}
    */
   protected void notifyPlayers() {
-    sendPacket.accept(
-      buildPacket(
-        updateDestination,
-        buildUpdatePacket()
-      )
-    );
+    Object data = buildUpdatePacket();
+
+    synchronized (players) {
+      players.forEach(player -> player.send(config.getUpdateDestination(), data));
+    }
   }
 
   protected void stopAfterNextStep() {

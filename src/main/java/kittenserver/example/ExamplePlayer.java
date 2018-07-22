@@ -10,14 +10,7 @@ import java.util.function.Consumer;
 
 public class ExamplePlayer extends AbstractPlayer<ExampleRoom> {
 
-  /**
-   * Player's nickname.
-   */
-  @Getter
-  protected String name;
-
-  public ExamplePlayer(Principal principal, Consumer<GenericPacket> sendPacket, String name) {
+  public ExamplePlayer(Principal principal, Consumer<GenericPacket> sendPacket) {
     super(principal, sendPacket);
-    this.name = name;
   }
 }

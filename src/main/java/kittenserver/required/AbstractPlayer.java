@@ -45,22 +45,22 @@ public abstract class AbstractPlayer<R extends AbstractRoom> {
   }
 
   /**
-   * Sends packet to player.<br>
-   * @param destination packet destination.<br>
+   * Sends data to player.<br>
+   * @param destination data destination.<br>
    *                    Keep in mind two things:
    *                    <ul>
    *                      <li><b>Application property (${socket.message.broker.prefix}) + "/"</b> is prepended to the destination parameter</li>
    *                      <li>client-side must also prepend <b> "/user/"</b></li>
    *                    </ul>
-   *                    So, assuming that WebSocketConfig.DESTINATION_PREFIX is "/game_get", and destination is "you_died", then
+   *                    So, assuming that AbstractGameConfiguration.DESTINATION_PREFIX is "/game_get", and destination is "you_died", then
    *                    client-side must subscribe to <b>/user/game_get/you_died</b>.
    */
-  public void send(String destination, Object packet) {
+  public void send(String destination, Object data) {
     sendPacket.accept(
       buildPacket(
         principal,
         destination,
-        packet
+        data
       )
     );
   }
