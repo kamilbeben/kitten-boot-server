@@ -1,38 +1,39 @@
 package kittenserver.required;
 
-import kittenserver.config.WebSocketConfig;
 import kittenserver.config.RoomConfig;
+import kittenserver.packets.GenericPacket;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.ToString;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
-import static kittenserver.config.WebSocketConfig.DESTINATION_PREFIX;
+import static kittenserver.packets.GenericPacket.buildPacket;
 
 @ToString
 public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnable {
 
   @Getter protected final String uuid = UUID.randomUUID().toString();
   protected final Set<T> players;
+  protected final Consumer<GenericPacket> sendPacket;
   protected final RoomConfig config;
-  protected final SimpMessagingTemplate webSocket;
   protected final Timer notifyPlayersTimer = new Timer();
   protected final String updateDestination;
 
   private boolean stopRoom = false;
 
-  public AbstractRoom(SimpMessagingTemplate webSocket, Set<T> players, RoomConfig config) {
-    requireNonNull(players);
-    requireNonNull(config);
-    requireNonNull(webSocket);
+  public AbstractRoom(@NonNull Consumer<GenericPacket> sendPacket,
+                      @NonNull Set<T> players,
+                      @NonNull RoomConfig config) {
 
     if (players.size() > config.getMaxPlayers()) {
       throw new UnsupportedOperationException("Players size exceeded maximum size");
     }
 
-    this.webSocket = webSocket;
+    this.sendPacket = sendPacket;
     this.config = config;
     this.players = players;
 
@@ -68,21 +69,6 @@ public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnabl
    * @see #notifyPlayers()
    */
   protected abstract Object buildUpdatePacket();
-
-  /**
-   * Sends packet to given player.<br>
-   * @param destination packet destination.<br>
-   *                    Keep in mind two things:
-   *                    <ul>
-   *                      <li><b>{@link WebSocketConfig#DESTINATION_PREFIX} + "/"</b> is prepended to the destination parameter</li>
-   *                      <li>client-side must also prepend <b> "/user/"</b></li>
-   *                    </ul>
-   *                    So, assuming that WebSocketConfig.DESTINATION_PREFIX is "/game_get", and destination is "you_died", then
-   *                    client-side must subscribe to <b>/user/game_get/you_died</b>.
-   */
-  protected void send(T player, String destination, Object packet) {
-    webSocket.convertAndSendToUser(player.getPrincipal().getName(), DESTINATION_PREFIX + "/" + destination, packet);
-  }
 
   /**
    * Starts the game
@@ -154,7 +140,12 @@ public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnabl
    * Called by: {@link #notifyPlayersTimer}
    */
   protected void notifyPlayers() {
-    this.webSocket.convertAndSend(updateDestination, buildUpdatePacket());
+    sendPacket.accept(
+      buildPacket(
+        updateDestination,
+        buildUpdatePacket()
+      )
+    );
   }
 
   protected void stopAfterNextStep() {

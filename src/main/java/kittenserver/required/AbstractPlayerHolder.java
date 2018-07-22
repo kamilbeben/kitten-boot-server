@@ -1,6 +1,7 @@
 package kittenserver.required;
 
-import kittenserver.required.defaults.DefaultPlayerHolder;
+import kittenserver.example.ExamplePlayerHolder;
+import lombok.NonNull;
 
 import java.security.Principal;
 import java.util.HashMap;
@@ -13,22 +14,19 @@ import static java.util.Objects.requireNonNull;
  * It is important to keep it <b>singletone</b>, which is default bean type in Spring, so don't change it!<br>
  * @param <T> your's implementation of {@link AbstractPlayer}
  *
- * @see DefaultPlayerHolder
+ * @see ExamplePlayerHolder
  */
 public abstract class AbstractPlayerHolder<T extends AbstractPlayer> {
 
   protected Map<Principal, T> map = new HashMap<>();
 
-  public void addPlayer(T player) {
-    requireNonNull(player, "Player cannot be null");
-
+  public void addPlayer(@NonNull T player) {
     synchronized (map) {
       map.put(player.getPrincipal(), player);
     }
   }
 
-  public void removePlayer(T player) {
-    requireNonNull(player);
+  public void removePlayer(@NonNull T player) {
     requireNonNull(player.getRoom());
 
     player.getRoom().remove(player);
@@ -36,12 +34,16 @@ public abstract class AbstractPlayerHolder<T extends AbstractPlayer> {
     synchronized (map) {
       map.remove(player.getPrincipal());
     }
-
   }
 
-  public T getPlayerByPrincipal(String UUID) {
+  /**
+   *
+   * @param principal Spring security Principal
+   * @return Player if {@link #map} contains Player associated with given Principal, otherwise {@literal null}.
+   */
+  public T getPlayer(@NonNull Principal principal) {
     synchronized (map) {
-      return map.get(UUID);
+      return map.get(principal);
     }
   }
 }

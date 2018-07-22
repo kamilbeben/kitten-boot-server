@@ -1,7 +1,8 @@
 package kittenserver.config;
 
-import kittenserver.config.UUIDHandshakeHandler;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -11,24 +12,30 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-  public static final String DESTINATION_PREFIX = "/game_get";
-  public static final String APPLICATION_DESTINATION_PREFIX = "/game_post";
-  public static final String REGISTER_ENDPOINT = "/register";
-  public static final String ALLOWED_ORIGINS = "*";
+  @Value("${socket.register.path}")
+  private String registerEndpoint;
+
+  @Value("${socket.allowed.origins}")
+  private String allowedOrigins;
+
+  @Value("${socket.message.broker.prefix}")
+  private String messageBrokerPrefix;
+
+  @Value("${socket.application.destination.prefix}")
+  private String applicationDestinationPrefix;
 
   @Override
   public void configureMessageBroker(MessageBrokerRegistry config) {
-    config.enableSimpleBroker(DESTINATION_PREFIX);
-    config.setApplicationDestinationPrefixes(APPLICATION_DESTINATION_PREFIX);
+    config.enableSimpleBroker(messageBrokerPrefix);
+    config.setApplicationDestinationPrefixes(applicationDestinationPrefix);
   }
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     registry
-      .addEndpoint(REGISTER_ENDPOINT)
-      .setAllowedOrigins(ALLOWED_ORIGINS)
+      .addEndpoint(registerEndpoint)
+      .setAllowedOrigins(allowedOrigins)
       .setHandshakeHandler(new UUIDHandshakeHandler())
       .withSockJS();
   }
-
 }

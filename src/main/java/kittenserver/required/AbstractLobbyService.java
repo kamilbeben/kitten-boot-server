@@ -1,40 +1,63 @@
 package kittenserver.required;
 
-import kittenserver.dto.BasePlayerDto;
-import kittenserver.packets.RegisterPacket;
-import kittenserver.required.defaults.DefaultLobbyService;
+import kittenserver.config.RoomConfig;
+import kittenserver.events.WebSocketWrapper;
+import kittenserver.example.ExampleLobbyService;
+import kittenserver.packets.GenericPacket;
+import lombok.Getter;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * @param <T> your implementation of {@link AbstractPlayer}
  * @param <R> your's implementation of {@link AbstractRoom}
  *
- * @see DefaultLobbyService
+ * @see ExampleLobbyService
  */
 public abstract class AbstractLobbyService<T extends AbstractPlayer<R>, R extends AbstractRoom<T>> {
 
-  @Autowired protected SimpMessagingTemplate webSocket;
+  @Autowired protected WebSocketWrapper webSocket;
   @Autowired protected AbstractPlayerHolder<T> playerHolder;
 
-  protected final Set<AbstractRoom> rooms = new HashSet<>();
-  protected long maxAmountOfWaitBeforeStartingARoom = 30 * 1000;
+  // room roomConfig
+  @Value("${game.room.max.players}")
+  private int roomMaxPlayers;
 
-  protected abstract T constructPlayer(RegisterPacket packet, Principal principal);
-  protected abstract R constructRoom(Set<T> players, SimpMessagingTemplate messagingTemplate);
+  @Value("${game.room.update.packet.interval}")
+  private long roomUpdatePacketInterval;
 
-  public BasePlayerDto registerPlayer(RegisterPacket packet, Principal principal) {
-    T player = constructPlayer(packet, principal);
+  @Value("${game.room.update.destination}")
+  private String roomUpdateDestination;
+
+  @Getter(lazy = true)
+  private final RoomConfig roomConfig = prepareRoomConfig();
+
+  // rooms
+  protected final Set<R> rooms = new HashSet<>();
+
+  protected final Set<T> playersInQueue = new HashSet<>();
+
+  protected abstract T constructPlayer(Principal principal, Consumer<GenericPacket> sendPacket);
+  protected abstract R constructRoom(Consumer<GenericPacket> sendPacket, Set<T> players, RoomConfig config);
+
+  public void registerPlayer(@NonNull Principal principal) {
+    T player = constructPlayer(principal, webSocket::send);
     playerHolder.addPlayer(player);
-    return new BasePlayerDto(player);
+
+    synchronized (playersInQueue) {
+      playersInQueue.add(player);
+      //TODO players queue
+    }
   }
 
   private R createNewRoom(Set<T> players) {
-    R room = constructRoom(players, webSocket);
+    R room = constructRoom(webSocket::send, players, getRoomConfig());
 
     synchronized (rooms) {
       rooms.add(room);
@@ -44,4 +67,11 @@ public abstract class AbstractLobbyService<T extends AbstractPlayer<R>, R extend
     return room;
   }
 
+  private RoomConfig prepareRoomConfig() {
+    RoomConfig config = new RoomConfig();
+    config.setMaxPlayers(roomMaxPlayers);
+    config.setUpdateSendingInterval(roomUpdatePacketInterval);
+    config.setRoomUpdateDestination(roomUpdateDestination);
+    return config;
+  }
 }

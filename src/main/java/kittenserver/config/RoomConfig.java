@@ -5,8 +5,6 @@ import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString
 public class RoomConfig {
 
@@ -26,10 +24,15 @@ public class RoomConfig {
   /**
    * Room update packet destination. Must contain {@literal "/uuid"} somewhere
    */
-  private String roomUpdateDestination = "/room/update/uuid";
+  private String roomUpdateDestination = "/room/update/{uuid}";
 
   public String getRoomUpdateDetination(String uuid) {
-    return roomUpdateDestination.replace("uuid", uuid);
+    if (!roomUpdateDestination.contains("{uuid}")) {
+      throw new UnsupportedOperationException(
+        "roomUpdateDestination has invalid format [" + roomUpdateDestination + "]. String \"uuid\" is not present"
+      );
+    }
+    return roomUpdateDestination.replace("{uuid}", uuid);
   }
 
 }

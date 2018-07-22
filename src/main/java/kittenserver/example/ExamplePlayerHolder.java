@@ -1,4 +1,4 @@
-package kittenserver.required.defaults;
+package kittenserver.example;
 
 import kittenserver.required.AbstractPlayerHolder;
 import org.springframework.context.annotation.Primary;
@@ -9,6 +9,6 @@ import org.springframework.stereotype.Service;
  * use <b>{@link Primary}</b> annotation.
  */
 @Service
-public class DefaultPlayerHolder extends AbstractPlayerHolder<DefaultPlayer> {
+public class ExamplePlayerHolder extends AbstractPlayerHolder<ExamplePlayer> {
 
 }
