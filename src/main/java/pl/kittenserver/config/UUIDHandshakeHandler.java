@@ -1,4 +1,4 @@
-package kittenserver.config;
+package pl.kittenserver.config;
 
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.web.socket.WebSocketHandler;

@@ -1,7 +1,7 @@
-package kittenserver.example;
+package pl.example;
 
-import kittenserver.properties.RoomProperties;
-import kittenserver.required.AbstractRoom;
+import pl.kittenserver.properties.RoomProperties;
+import pl.kittenserver.abstracted.AbstractRoom;
 
 import java.util.Set;
 
@@ -14,6 +14,10 @@ public class ExampleRoom extends AbstractRoom<ExamplePlayer> {
   @Override
   protected void init() {
     synchronized (players) {
+
+      // that's a perfect place to setup player body, health or whatever you need
+
+      // let's inform them that the room has started.
       players.forEach(player -> player.send("/room_started", "ROOM STARTED"));
     }
   }
@@ -35,6 +39,7 @@ public class ExampleRoom extends AbstractRoom<ExamplePlayer> {
 
   @Override
   protected Object buildUpdatePacket() {
+    // this is the right place for broadcasting data about every player's position, etc.
     RoomUpdate packet = new RoomUpdate();
     packet.setSomeData("literally anything");
     return packet;

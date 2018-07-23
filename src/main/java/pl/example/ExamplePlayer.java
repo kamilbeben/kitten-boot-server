@@ -1,9 +1,7 @@
-package kittenserver.example;
+package pl.example;
 
-import kittenserver.packets.GenericPacket;
-import kittenserver.required.AbstractPlayer;
-import lombok.Getter;
-import lombok.Setter;
+import pl.kittenserver.packets.GenericPacket;
+import pl.kittenserver.abstracted.AbstractPlayer;
 
 import java.security.Principal;
 import java.util.function.Consumer;

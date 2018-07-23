@@ -1,13 +1,15 @@
-package kittenserver.required;
+package pl.kittenserver.abstracted;
 
-import kittenserver.events.PlayerDisconnectEvent;
-import kittenserver.events.PlayerJoinEvent;
-import kittenserver.properties.RoomProperties;
-import kittenserver.beans.WebSocketWrapper;
-import kittenserver.example.ExampleLobbyService;
-import kittenserver.packets.GenericPacket;
+import pl.kittenserver.events.PlayerDisconnectEvent;
+import pl.kittenserver.events.PlayerJoinEvent;
+import pl.kittenserver.properties.RoomProperties;
+import pl.kittenserver.required.WebSocketWrapper;
+import pl.example.ExampleLobbyService;
+import pl.kittenserver.packets.GenericPacket;
+import pl.kittenserver.required.PlayerHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.EventListener;
 
 import java.security.Principal;
@@ -15,25 +17,26 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
+
 /**
  * @param <T> your implementation of {@link AbstractPlayer}
  * @param <R> your's implementation of {@link AbstractRoom}
  *
  * @see ExampleLobbyService
  */
-@EnableConfigurationProperties({
-  RoomProperties.class
-})
+@Scope(SCOPE_SINGLETON)
+@EnableConfigurationProperties(RoomProperties.class)
 public abstract class AbstractLobbyService<T extends AbstractPlayer<R>, R extends AbstractRoom<T>> {
 
   @Autowired protected WebSocketWrapper webSocket;
-  @Autowired protected AbstractPlayerHolder<T> playerHolder;
+  @Autowired protected PlayerHolder playerHolder;
   @Autowired protected RoomProperties roomProperties;
 
   // rooms
   protected final Set<R> rooms = new HashSet<>();
 
-  protected final Set<T> playersInLobby = new HashSet<>();
+  protected final Set<T> playersInQueue = new HashSet<>();
 
   protected abstract T constructPlayer(Principal principal, Consumer<GenericPacket> sendPacket);
   protected abstract R constructRoom(Set<T> players, RoomProperties config);
@@ -42,11 +45,6 @@ public abstract class AbstractLobbyService<T extends AbstractPlayer<R>, R extend
   public void registerPlayer(PlayerJoinEvent event) {
     T player = constructPlayer(event.getSource(), webSocket::send);
     playerHolder.addPlayer(player);
-
-    synchronized (playersInLobby) {
-      playersInLobby.add(player);
-      afterPlayerRegistered();
-    }
   }
 
   @EventListener(PlayerDisconnectEvent.class)
@@ -61,18 +59,28 @@ public abstract class AbstractLobbyService<T extends AbstractPlayer<R>, R extend
     }
 
     // if player is not in room, remove him from lobby
-    synchronized (playersInLobby) {
-      playersInLobby.remove(player);
+    synchronized (playersInQueue) {
+      playersInQueue.remove(player);
+    }
+  }
+
+  public void joinPublicQueue(Principal principal) {
+    T player = getPlayer(principal);
+    if (player.getRoom() != null) return;
+
+    synchronized (playersInQueue) {
+      playersInQueue.add(player);
+      refreshQueue();
     }
   }
 
   /**
    * If you need to implement custom queueing or room creation policy, then overriding this method is a good place to start.
-   * Kepp in mind that it's execution is synchronized on {@link #playersInLobby}!
+   * Kepp in mind that it's execution is synchronized on {@link #playersInQueue}!
    */
-  protected void afterPlayerRegistered() {
+  protected void refreshQueue() {
 
-    int playersCount = playersInLobby.size();
+    int playersCount = playersInQueue.size();
 
     // first player joined queue, start counting
     if (playersCount == 1) {
@@ -82,23 +90,34 @@ public abstract class AbstractLobbyService<T extends AbstractPlayer<R>, R extend
 
     // sequent player joined queue, but minimum players limit was not yet reached
     if (playersCount == roomProperties.getMinPlayers()) {
-      startNewRoom();
+      startNewPublicRoom();
     };
 
     // sequent player joined queue, maximum players limit was reached, starting new room
     if (playersCount >= roomProperties.getMaxPlayers()) {
-      startNewRoom();
+      startNewPublicRoom();
     }
   }
 
-  private void startNewRoom() {
-    R newRoom = createNewRoom(new HashSet<>(playersInLobby));
-    newRoom.start();
-    playersInLobby.clear();
+  protected T getPlayer(Principal principal) {
+    AbstractPlayer player = playerHolder.getPlayer(principal);
+    return player != null
+      ? (T) player
+      : null;
   }
 
-  private R createNewRoom(Set<T> players) {
+  private void startNewPublicRoom() {
+    HashSet<T> clonedPlayers = new HashSet<>(playersInQueue);
+    playersInQueue.clear();
+
+    R newRoom = createNewRoom(clonedPlayers, false);
+
+    newRoom.start();
+  }
+
+  private R createNewRoom(Set<T> players, boolean isPrivate) {
     R room = constructRoom(players, roomProperties);
+
     rooms.add(room);
     return room;
   }

@@ -1,4 +1,4 @@
-package kittenserver.example;
+package pl.example;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +9,7 @@ import lombok.ToString;
 @ToString
 public class RoomUpdate {
 
+  // keep going (͡° ͜ʖ ͡°)
   private String someData;
 
 }

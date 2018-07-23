@@ -1,4 +1,4 @@
-package kittenserver.packets;
+package pl.kittenserver.packets;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

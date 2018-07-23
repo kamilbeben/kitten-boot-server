@@ -1,13 +1,13 @@
-package kittenserver.properties;
+package pl.kittenserver.properties;
 
-import kittenserver.required.AbstractRoom;
+import pl.kittenserver.abstracted.AbstractRoom;
 import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
 @ToString
-@ConfigurationProperties("game.room")
+@ConfigurationProperties("room")
 public class RoomProperties {
 
   /**

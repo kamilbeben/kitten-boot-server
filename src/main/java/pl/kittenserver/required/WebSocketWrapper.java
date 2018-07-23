@@ -1,6 +1,6 @@
-package kittenserver.beans;
+package pl.kittenserver.required;
 
-import kittenserver.packets.GenericPacket;
+import pl.kittenserver.packets.GenericPacket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -12,7 +12,7 @@ public class WebSocketWrapper {
 
   private final SimpMessagingTemplate webSocket;
 
-  @Value("${socket.message.broker.prefix}")
+  @Value("${socket.message-broker-prefix}")
   private String destinationPrefix;
 
   public void send(GenericPacket packet) {

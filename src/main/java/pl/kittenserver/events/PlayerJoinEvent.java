@@ -1,4 +1,4 @@
-package kittenserver.events;
+package pl.kittenserver.events;
 
 import org.springframework.context.ApplicationEvent;
 

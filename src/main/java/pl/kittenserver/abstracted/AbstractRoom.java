@@ -1,6 +1,6 @@
-package kittenserver.required;
+package pl.kittenserver.abstracted;
 
-import kittenserver.properties.RoomProperties;
+import pl.kittenserver.properties.RoomProperties;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
@@ -8,7 +8,7 @@ import lombok.ToString;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
-import static kittenserver.packets.GenericPacket.buildPacket;
+import static pl.kittenserver.packets.GenericPacket.buildPacket;
 
 @ToString
 public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnable {
@@ -18,7 +18,9 @@ public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnabl
   protected final RoomProperties config;
   protected final Timer notifyPlayersTimer = new Timer();
 
-  private boolean stopRoom = false;
+  private boolean isPrivate;
+  private boolean stopped;
+  private boolean started;
 
   public AbstractRoom(@NonNull Set<T> players,
                       @NonNull RoomProperties config) {
@@ -71,6 +73,7 @@ public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnabl
     init();
 
     new Thread(this).start();
+    started = true;
 
     notifyPlayersTimer.scheduleAtFixedRate(new TimerTask() {
       @Override
@@ -88,11 +91,10 @@ public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnabl
       update((System.currentTimeMillis() - timeBefore));
       timeBefore = System.currentTimeMillis();
 
-      if (stopRoom) {
-        break;
-      }
+      if (stopped) break;
     }
 
+    // TODO notify Lobby service
     notifyPlayersTimer.cancel();
   }
 
@@ -139,7 +141,7 @@ public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnabl
   }
 
   protected void stopAfterNextStep() {
-    this.stopRoom = true;
+    stopped = true;
   }
 
   @Override

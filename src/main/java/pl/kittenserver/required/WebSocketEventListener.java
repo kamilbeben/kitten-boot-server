@@ -1,9 +1,8 @@
-package kittenserver.beans;
+package pl.kittenserver.required;
 
-import kittenserver.events.PlayerDisconnectEvent;
-import kittenserver.events.PlayerJoinEvent;
-import kittenserver.required.AbstractPlayer;
-import kittenserver.required.AbstractPlayerHolder;
+import pl.kittenserver.events.PlayerDisconnectEvent;
+import pl.kittenserver.events.PlayerJoinEvent;
+import pl.kittenserver.abstracted.AbstractPlayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -18,7 +17,7 @@ public class WebSocketEventListener {
   private ApplicationEventPublisher publisher;
 
   @Autowired
-  private AbstractPlayerHolder playerHolder;
+  private PlayerHolder playerHolder;
 
   @EventListener(SessionConnectedEvent.class)
   public void onSessionConnected(SessionConnectedEvent event) {

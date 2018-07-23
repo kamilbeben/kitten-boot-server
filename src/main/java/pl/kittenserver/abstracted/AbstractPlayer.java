@@ -1,6 +1,7 @@
-package kittenserver.required;
+package pl.kittenserver.abstracted;
 
-import kittenserver.packets.GenericPacket;
+import pl.kittenserver.packets.GenericPacket;
+import pl.kittenserver.required.PlayerHolder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -10,7 +11,7 @@ import java.security.Principal;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import static kittenserver.packets.GenericPacket.buildPacket;
+import static pl.kittenserver.packets.GenericPacket.buildPacket;
 
 @ToString(exclude = "room")
 public abstract class AbstractPlayer<R extends AbstractRoom> {
@@ -20,8 +21,8 @@ public abstract class AbstractPlayer<R extends AbstractRoom> {
    * Used for two things:
    * <ul>
    *   <li>
-   *     To retrieve player from {@link AbstractPlayerHolder}
-   *     using {@link AbstractPlayerHolder#getPlayer(Principal)}
+   *     To retrieve player from {@link PlayerHolder}
+   *     using {@link PlayerHolder#getPlayer(Principal)}
    *   </li>
    *   <li>
    *     To send messages using {@link #send(String, Object)}
@@ -52,12 +53,12 @@ public abstract class AbstractPlayer<R extends AbstractRoom> {
    *                      <li><b>Application property (${socket.message.broker.prefix}) + "/"</b> is prepended to the destination parameter</li>
    *                      <li>client-side must also prepend <b> "/user/"</b></li>
    *                    </ul>
-   *                    So, assuming that AbstractGameConfiguration.DESTINATION_PREFIX is "/game_get", and destination is "you_died", then
+   *                    So, assuming that WebSocketConfiguration.DESTINATION_PREFIX is "/game_get", and destination is "you_died", then
    *                    client-side must subscribe to <b>/user/game_get/you_died</b>.
    */
   public void send(String destination, Object data) {
     sendPacket.accept(
-      buildPacket(
+      GenericPacket.buildPacket(
         principal,
         destination,
         data
