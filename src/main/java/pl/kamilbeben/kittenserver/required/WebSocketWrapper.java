@@ -1,6 +1,6 @@
-package pl.kittenserver.required;
+package pl.kamilbeben.kittenserver.required;
 
-import pl.kittenserver.packets.GenericPacket;
+import pl.kamilbeben.kittenserver.packets.GenericPacket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

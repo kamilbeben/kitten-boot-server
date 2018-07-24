@@ -1,6 +1,6 @@
-package pl.kittenserver.properties;
+package pl.kamilbeben.kittenserver.properties;
 
-import pl.kittenserver.abstracted.AbstractRoom;
+import pl.kamilbeben.kittenserver.abstracted.AbstractRoom;
 import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

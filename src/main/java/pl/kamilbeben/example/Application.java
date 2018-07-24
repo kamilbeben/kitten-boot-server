@@ -1,9 +1,9 @@
-package pl.example;
+package pl.kamilbeben.example;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
-import pl.kittenserver.required.KittenMarker;
+import pl.kamilbeben.kittenserver.required.KittenMarker;
 
 @ComponentScan(basePackageClasses = {
   // This line tells Spring to search for @Beans and @Configuration in package containing KittenMarker.class,

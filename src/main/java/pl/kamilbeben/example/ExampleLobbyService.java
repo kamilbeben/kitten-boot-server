@@ -1,8 +1,8 @@
-package pl.example;
+package pl.kamilbeben.example;
 
-import pl.kittenserver.properties.RoomProperties;
-import pl.kittenserver.packets.GenericPacket;
-import pl.kittenserver.abstracted.AbstractLobbyService;
+import pl.kamilbeben.kittenserver.packets.GenericPacket;
+import pl.kamilbeben.kittenserver.properties.RoomProperties;
+import pl.kamilbeben.kittenserver.abstracted.AbstractLobbyService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 

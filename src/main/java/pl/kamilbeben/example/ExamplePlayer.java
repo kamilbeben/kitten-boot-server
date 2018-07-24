@@ -1,7 +1,7 @@
-package pl.example;
+package pl.kamilbeben.example;
 
-import pl.kittenserver.packets.GenericPacket;
-import pl.kittenserver.abstracted.AbstractPlayer;
+import pl.kamilbeben.kittenserver.packets.GenericPacket;
+import pl.kamilbeben.kittenserver.abstracted.AbstractPlayer;
 
 import java.security.Principal;
 import java.util.function.Consumer;

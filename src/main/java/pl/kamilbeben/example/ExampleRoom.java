@@ -1,7 +1,7 @@
-package pl.example;
+package pl.kamilbeben.example;
 
-import pl.kittenserver.properties.RoomProperties;
-import pl.kittenserver.abstracted.AbstractRoom;
+import pl.kamilbeben.kittenserver.abstracted.AbstractRoom;
+import pl.kamilbeben.kittenserver.properties.RoomProperties;
 
 import java.util.Set;
 

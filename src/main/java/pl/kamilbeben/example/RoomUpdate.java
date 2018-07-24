@@ -1,4 +1,4 @@
-package pl.example;
+package pl.kamilbeben.example;
 
 import lombok.Getter;
 import lombok.Setter;

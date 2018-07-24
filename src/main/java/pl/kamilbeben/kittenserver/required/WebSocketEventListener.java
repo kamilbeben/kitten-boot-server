@@ -1,8 +1,8 @@
-package pl.kittenserver.required;
+package pl.kamilbeben.kittenserver.required;
 
-import pl.kittenserver.events.PlayerDisconnectEvent;
-import pl.kittenserver.events.PlayerJoinEvent;
-import pl.kittenserver.abstracted.AbstractPlayer;
+import pl.kamilbeben.kittenserver.events.PlayerDisconnectEvent;
+import pl.kamilbeben.kittenserver.events.PlayerJoinEvent;
+import pl.kamilbeben.kittenserver.abstracted.AbstractPlayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;

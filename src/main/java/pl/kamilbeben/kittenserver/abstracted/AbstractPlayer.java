@@ -1,7 +1,7 @@
-package pl.kittenserver.abstracted;
+package pl.kamilbeben.kittenserver.abstracted;
 
-import pl.kittenserver.packets.GenericPacket;
-import pl.kittenserver.required.PlayerHolder;
+import pl.kamilbeben.kittenserver.packets.GenericPacket;
+import pl.kamilbeben.kittenserver.required.PlayerHolder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import java.security.Principal;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import static pl.kittenserver.packets.GenericPacket.buildPacket;
+import static pl.kamilbeben.kittenserver.packets.GenericPacket.buildPacket;
 
 @ToString(exclude = "room")
 public abstract class AbstractPlayer<R extends AbstractRoom> {

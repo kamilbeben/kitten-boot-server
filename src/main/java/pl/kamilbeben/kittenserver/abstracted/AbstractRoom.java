@@ -1,6 +1,6 @@
-package pl.kittenserver.abstracted;
+package pl.kamilbeben.kittenserver.abstracted;
 
-import pl.kittenserver.properties.RoomProperties;
+import pl.kamilbeben.kittenserver.properties.RoomProperties;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
@@ -8,7 +8,7 @@ import lombok.ToString;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
-import static pl.kittenserver.packets.GenericPacket.buildPacket;
+import static pl.kamilbeben.kittenserver.packets.GenericPacket.buildPacket;
 
 @ToString
 public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnable {
