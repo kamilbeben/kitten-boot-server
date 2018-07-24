@@ -1,16 +1,15 @@
 package pl.kittenserver.abstracted;
 
-import pl.kittenserver.events.PlayerDisconnectEvent;
-import pl.kittenserver.events.PlayerJoinEvent;
-import pl.kittenserver.properties.RoomProperties;
-import pl.kittenserver.required.WebSocketWrapper;
-import pl.example.ExampleLobbyService;
-import pl.kittenserver.packets.GenericPacket;
-import pl.kittenserver.required.PlayerHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.EventListener;
+import pl.kittenserver.events.PlayerDisconnectEvent;
+import pl.kittenserver.events.PlayerJoinEvent;
+import pl.kittenserver.packets.GenericPacket;
+import pl.kittenserver.properties.RoomProperties;
+import pl.kittenserver.required.PlayerHolder;
+import pl.kittenserver.required.WebSocketWrapper;
 
 import java.security.Principal;
 import java.util.HashSet;
@@ -22,8 +21,6 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 /**
  * @param <T> your implementation of {@link AbstractPlayer}
  * @param <R> your's implementation of {@link AbstractRoom}
- *
- * @see ExampleLobbyService
  */
 @Scope(SCOPE_SINGLETON)
 @EnableConfigurationProperties(RoomProperties.class)
