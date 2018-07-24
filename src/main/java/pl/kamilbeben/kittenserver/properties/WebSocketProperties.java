@@ -1,4 +1,4 @@
-package pl.kittenserver.properties;
+package pl.kamilbeben.kittenserver.properties;
 
 import lombok.Getter;
 import lombok.Setter;

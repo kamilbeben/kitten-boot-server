@@ -1,4 +1,4 @@
-package pl.kittenserver.events;
+package pl.kamilbeben.kittenserver.events;
 
 import org.springframework.context.ApplicationEvent;
 

@@ -1,15 +1,15 @@
-package pl.kittenserver.abstracted;
+package pl.kamilbeben.kittenserver.abstracted;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.EventListener;
-import pl.kittenserver.events.PlayerDisconnectEvent;
-import pl.kittenserver.events.PlayerJoinEvent;
-import pl.kittenserver.packets.GenericPacket;
-import pl.kittenserver.properties.RoomProperties;
-import pl.kittenserver.required.PlayerHolder;
-import pl.kittenserver.required.WebSocketWrapper;
+import pl.kamilbeben.kittenserver.events.PlayerJoinEvent;
+import pl.kamilbeben.kittenserver.required.PlayerHolder;
+import pl.kamilbeben.kittenserver.events.PlayerDisconnectEvent;
+import pl.kamilbeben.kittenserver.packets.GenericPacket;
+import pl.kamilbeben.kittenserver.properties.RoomProperties;
+import pl.kamilbeben.kittenserver.required.WebSocketWrapper;
 
 import java.security.Principal;
 import java.util.HashSet;

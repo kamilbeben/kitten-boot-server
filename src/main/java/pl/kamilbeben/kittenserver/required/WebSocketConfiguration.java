@@ -1,7 +1,7 @@
-package pl.kittenserver.required;
+package pl.kamilbeben.kittenserver.required;
 
-import pl.kittenserver.config.UUIDHandshakeHandler;
-import pl.kittenserver.properties.WebSocketProperties;
+import pl.kamilbeben.kittenserver.config.UUIDHandshakeHandler;
+import pl.kamilbeben.kittenserver.properties.WebSocketProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

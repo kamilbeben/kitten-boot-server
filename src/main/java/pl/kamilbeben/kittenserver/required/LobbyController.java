@@ -1,6 +1,6 @@
-package pl.kittenserver.required;
+package pl.kamilbeben.kittenserver.required;
 
-import pl.kittenserver.abstracted.AbstractLobbyService;
+import pl.kamilbeben.kittenserver.abstracted.AbstractLobbyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RestController;

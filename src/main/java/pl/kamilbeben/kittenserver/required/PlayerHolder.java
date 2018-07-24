@@ -1,8 +1,8 @@
-package pl.kittenserver.required;
+package pl.kamilbeben.kittenserver.required;
 
-import pl.kittenserver.events.PlayerDisconnectEvent;
-import pl.kittenserver.abstracted.AbstractPlayer;
-import pl.kittenserver.abstracted.AbstractRoom;
+import pl.kamilbeben.kittenserver.events.PlayerDisconnectEvent;
+import pl.kamilbeben.kittenserver.abstracted.AbstractPlayer;
+import pl.kamilbeben.kittenserver.abstracted.AbstractRoom;
 import lombok.NonNull;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.EventListener;

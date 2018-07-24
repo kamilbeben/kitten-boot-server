@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/kitten-wars-server.iml" filepath="$PROJECT_DIR$/kitten-wars-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kitten-server.iml" filepath="$PROJECT_DIR$/kitten-server.iml" />
     </modules>
   </component>
 </project>
