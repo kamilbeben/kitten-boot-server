@@ -1,6 +1,6 @@
-package org.kittenboot.kittenserver.events;
+package org.kittenboot.server.events;
 
-import org.kittenboot.kittenserver.abstracted.AbstractPlayer;
+import org.kittenboot.server.abstracted.AbstractPlayer;
 import org.springframework.context.ApplicationEvent;
 
 public class PlayerDisconnectEvent extends ApplicationEvent {

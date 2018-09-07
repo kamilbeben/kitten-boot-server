@@ -1,8 +1,8 @@
-package org.kittenboot.kittenserver.required;
+package org.kittenboot.server.required;
 
-import org.kittenboot.kittenserver.abstracted.AbstractPlayer;
-import org.kittenboot.kittenserver.events.PlayerDisconnectEvent;
-import org.kittenboot.kittenserver.events.PlayerJoinEvent;
+import org.kittenboot.server.abstracted.AbstractPlayer;
+import org.kittenboot.server.events.PlayerDisconnectEvent;
+import org.kittenboot.server.events.PlayerJoinEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;

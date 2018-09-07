@@ -1,8 +1,8 @@
-package org.kittenboot.kittenserver.required;
+package org.kittenboot.server.required;
 
-import org.kittenboot.kittenserver.abstracted.AbstractPlayer;
-import org.kittenboot.kittenserver.abstracted.AbstractRoom;
-import org.kittenboot.kittenserver.events.PlayerDisconnectEvent;
+import org.kittenboot.server.abstracted.AbstractPlayer;
+import org.kittenboot.server.abstracted.AbstractRoom;
+import org.kittenboot.server.events.PlayerDisconnectEvent;
 import lombok.NonNull;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.EventListener;

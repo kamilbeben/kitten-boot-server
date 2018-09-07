@@ -1,4 +1,4 @@
-package org.kittenboot.kittenserver.config;
+package org.kittenboot.server.config;
 
 import lombok.Getter;
 

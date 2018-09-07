@@ -1,6 +1,6 @@
-package org.kittenboot.kittenserver.properties;
+package org.kittenboot.server.properties;
 
-import org.kittenboot.kittenserver.abstracted.AbstractRoom;
+import org.kittenboot.server.abstracted.AbstractRoom;
 import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -28,12 +28,9 @@ public class RoomProperties {
   /**
    * Update packet will be send every interval (in milliseconds).
    *
-   * @see AbstractRoom#notifyPlayers()
+   * @see AbstractRoom#sendRoomUpdate()
    * @see AbstractRoom#buildUpdatePacket()
    */
   private long updatePacketInterval = 33;
-
-  private String playerLeftDestination = "/player_leftdsad";
-  private String updateDestination = "/changepls";
 
 }

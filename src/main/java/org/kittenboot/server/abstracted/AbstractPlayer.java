@@ -1,7 +1,7 @@
-package org.kittenboot.kittenserver.abstracted;
+package org.kittenboot.server.abstracted;
 
-import org.kittenboot.kittenserver.packets.GenericPacket;
-import org.kittenboot.kittenserver.required.PlayerHolder;
+import org.kittenboot.server.packets.GenericPacket;
+import org.kittenboot.server.required.PlayerHolder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import java.security.Principal;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import static org.kittenboot.kittenserver.packets.GenericPacket.buildPacket;
+import static org.kittenboot.server.packets.GenericPacket.buildPacket;
 
 @ToString(exclude = "room")
 public abstract class AbstractPlayer<R extends AbstractRoom> {
@@ -37,6 +37,14 @@ public abstract class AbstractPlayer<R extends AbstractRoom> {
   @Getter
   @Setter
   protected R room;
+
+  @Getter
+  @Setter
+  private boolean isInPublicQueue;
+
+  @Getter
+  @Setter
+  private String privateQueueId;
 
   public AbstractPlayer(@NonNull Principal principal,
                         @NonNull Consumer<GenericPacket> sendPacket) {
@@ -64,6 +72,14 @@ public abstract class AbstractPlayer<R extends AbstractRoom> {
         data
       )
     );
+  }
+
+  public boolean isInRoom() {
+    return room != null;
+  }
+
+  public boolean isInPrivateQueue() {
+    return privateQueueId != null;
   }
 
   @Override

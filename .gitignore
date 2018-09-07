@@ -1,3 +1,8 @@
+# example
+src/main/java/org/kittenboot/example/**
+src/main/resources/**
+
+
 
 # Created by https://www.gitignore.io/api/maven,intellij
 

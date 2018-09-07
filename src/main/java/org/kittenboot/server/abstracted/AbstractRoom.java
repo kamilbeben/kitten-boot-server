@@ -1,6 +1,6 @@
-package org.kittenboot.kittenserver.abstracted;
+package org.kittenboot.server.abstracted;
 
-import org.kittenboot.kittenserver.properties.RoomProperties;
+import org.kittenboot.server.properties.RoomProperties;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
@@ -8,7 +8,10 @@ import lombok.ToString;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
-import static org.kittenboot.kittenserver.packets.GenericPacket.buildPacket;
+import static org.kittenboot.server.packets.GenericPacket.buildPacket;
+import static org.kittenboot.server.utils.Destinations.*;
+import static org.kittenboot.server.utils.Destinations.PLAYER_LEFT_ROOM;
+import static org.kittenboot.server.utils.Destinations.ROOM_UPDATE;
 
 @ToString
 public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnable {
@@ -41,28 +44,21 @@ public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnabl
   protected abstract void init();
 
   /**
-   * Method called <b>after</b> the player is removed from the room.
-   */
-  protected abstract void onPlayerRemove(T player);
-
-  /**
-   * Method called <b>after</b> the player is added to the room.
-   */
-  protected abstract void onPlayerJoin(T player);
-
-  /**
    * Method called every loop.
    * @param deltaTime time elapsed from last simulation.
    */
   protected abstract void update (long deltaTime);
 
   /**
-   * Build a packet that is dispatched to every player in the room once every {@link RoomProperties#updatePacketInterval}.
-   * The packet is dispatched to destination configured in {@link RoomProperties#updateDestination}
+   * Build a packet that is dispatched to every player in the room once every {@link RoomProperties#updatePacketInterval}
    *
-   * @see #notifyPlayers()
+   * @see #sendRoomUpdate()
    */
   protected abstract Object buildUpdatePacket();
+
+  protected abstract Object buildPlayerJoinedPacket(T player);
+
+  protected abstract Object buildPlayerLeftPacket(T player);
 
   /**
    * Starts the game
@@ -78,7 +74,7 @@ public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnabl
     notifyPlayersTimer.scheduleAtFixedRate(new TimerTask() {
       @Override
       public void run() {
-        notifyPlayers();
+        sendRoomUpdate();
       }
     }, new Date(), config.getUpdatePacketInterval());
   }
@@ -105,7 +101,7 @@ public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnabl
     if (players.isEmpty()) {
       stopAfterNextStep();
     }
-    onPlayerRemove(player);
+    onPlayerLeft(player);
   }
 
   /**
@@ -125,23 +121,35 @@ public abstract class AbstractRoom <T extends AbstractPlayer> implements Runnabl
       players.add(player);
     }
 
-    onPlayerJoin(player);
+    onPlayerJoined(player);
   }
 
   /**
    * Sends update room packet every {@link RoomProperties#updatePacketInterval}.<br>
    * Called by: {@link #notifyPlayersTimer}
    */
-  protected void notifyPlayers() {
-    Object data = buildUpdatePacket();
+  protected void sendRoomUpdate() {
+    notifyPlayers(ROOM_UPDATE, buildUpdatePacket());
+  }
+
+  protected void notifyPlayers(String destination, Object payload) {
+    if (payload == null) return;
 
     synchronized (players) {
-      players.forEach(player -> player.send(config.getUpdateDestination(), data));
+      players.forEach(player -> player.send(destination, payload));
     }
   }
 
   protected void stopAfterNextStep() {
     stopped = true;
+  }
+
+  protected void onPlayerLeft(T player) {
+    notifyPlayers(PLAYER_LEFT_ROOM, buildPlayerLeftPacket(player));
+  }
+
+  protected void onPlayerJoined(T player) {
+    notifyPlayers(PLAYER_JOINED_ROOM, buildPlayerJoinedPacket(player));
   }
 
   @Override

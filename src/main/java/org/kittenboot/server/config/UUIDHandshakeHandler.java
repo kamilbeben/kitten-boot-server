@@ -1,4 +1,4 @@
-package org.kittenboot.kittenserver.config;
+package org.kittenboot.server.config;
 
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.web.socket.WebSocketHandler;
@@ -11,6 +11,8 @@ public class UUIDHandshakeHandler extends DefaultHandshakeHandler {
 
   @Override
   protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {
+    attributes.put("custom", "kek");
     return new UUIDPrincipal();
   }
+
 }

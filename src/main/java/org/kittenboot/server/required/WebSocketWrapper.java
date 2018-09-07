@@ -1,6 +1,6 @@
-package org.kittenboot.kittenserver.required;
+package org.kittenboot.server.required;
 
-import org.kittenboot.kittenserver.packets.GenericPacket;
+import org.kittenboot.server.packets.GenericPacket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

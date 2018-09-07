@@ -1,4 +1,4 @@
-package org.kittenboot.kittenserver.properties;
+package org.kittenboot.server.properties;
 
 import lombok.Getter;
 import lombok.Setter;

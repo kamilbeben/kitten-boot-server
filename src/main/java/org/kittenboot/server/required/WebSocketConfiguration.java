@@ -1,25 +1,22 @@
-package org.kittenboot.kittenserver.required;
+package org.kittenboot.server.required;
 
-import org.kittenboot.kittenserver.config.UUIDHandshakeHandler;
-import org.kittenboot.kittenserver.properties.WebSocketProperties;
+import org.kittenboot.server.config.UUIDHandshakeHandler;
+import org.kittenboot.server.properties.WebSocketProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.server.HandshakeHandler;
 
 /**
- * Just extend this class and let it autoconfiguration do it's job. Don't forget about these two annotations:
- * <br>
- * <ul>
- *   <li>{@literal @}Configuration</li>
- *   <li>{@literal @}EnableWebSocketMessageBroker</li>
- * </ul>
- * <br>
- * And followed properties in your configuration (application.properties/yml) file:
+ * If you are using {@link KittenMarker} as a marker for {@link ComponentScan},
+ * then all you have to do is add below properties to configuration
+ * (application.properties/yml) file.
  * <ul>
  *   <li> socket.register-path </li>
  *   <li> socket.allowed-origins </li>
@@ -40,6 +37,11 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     return new WebSocketEventListener();
   }
 
+  @Bean
+  public HandshakeHandler uuidHanshakeHandler() {
+    return new UUIDHandshakeHandler();
+  }
+
   @Override
   public void configureMessageBroker(MessageBrokerRegistry config) {
     config.enableSimpleBroker(properties.getMessageBrokerPrefix());
@@ -51,8 +53,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     registry
       .addEndpoint(properties.getRegisterEndpoint())
       .setAllowedOrigins(properties.getAllowedOrigins())
-      .setHandshakeHandler(new UUIDHandshakeHandler())
-      .withSockJS();
+      .setHandshakeHandler(uuidHanshakeHandler());
   }
 
 }
